@@ -1,0 +1,188 @@
+2. ***3 mark percentage***
+
+**activity_main.xml**
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login" />
+</LinearLayout>
+
+**activity_marks.xml**
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etMark1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mark 1"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/etMark2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mark 2"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/etMark3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mark 3"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/btnCalculate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Calculate Percentage" />
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:text="Result will be displayed here"
+        android:textSize="16sp" />
+</LinearLayout>
+
+**AndroidManifest.xml**
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Exam1"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MarksActivity"
+            android:exported="true">
+
+        </activity>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>
+
+**MainActivity.java**
+
+package com.example.exam1;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        EditText etusername = findViewById(R.id.etUsername);
+        EditText etpassword = findViewById(R.id.etPassword);
+        Button btnLogin = findViewById(R.id.btnLogin);
+
+        btnLogin.setOnClickListener(v ->
+                {
+                        String username = etusername.getText().toString().trim();
+                        String password = etpassword.getText().toString().trim();
+                        if (username.equals("admin") && password.equals("password")) {
+                            Intent intent = new Intent(MainActivity.this, MarksActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+    }
+}
+
+**MarksActivity.java**
+
+package com.example.exam1;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MarksActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_marks);
+
+        EditText etMark1 = findViewById(R.id.etMark1);
+        EditText etMark2 = findViewById(R.id.etMark2);
+        EditText etMark3 = findViewById(R.id.etMark3);
+        Button btnCalculate = findViewById(R.id.btnCalculate);
+        TextView tvResult = findViewById(R.id.tvResult);
+
+        btnCalculate.setOnClickListener(v -> {
+            try {
+                int mark1 = Integer.parseInt(etMark1.getText().toString().trim());
+                int mark2 = Integer.parseInt(etMark2.getText().toString().trim());
+                int mark3 = Integer.parseInt(etMark3.getText().toString().trim());
+                int total = mark1 + mark2 + mark3;
+                double percentage = (total / 3.0);
+
+                tvResult.setText("Percentage: " + percentage + "%");
+            } catch (NumberFormatException e) {
+                tvResult.setText("Please enter valid marks!");
+            }
+        });
+    }
+}
