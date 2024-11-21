@@ -1,0 +1,238 @@
+5. ***ID card***
+
+**activity_main.xml**
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- EditText for Admission Number -->
+    <EditText
+        android:id="@+id/etAdmissionNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Admission Number"
+        android:inputType="text" />
+
+    <!-- EditText for Student Name -->
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Student Name"
+        android:inputType="text" />
+
+    <!-- EditText for Course -->
+    <EditText
+        android:id="@+id/etCourse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Course"
+        android:inputType="text" />
+
+    <!-- EditText for Phone Number -->
+    <EditText
+        android:id="@+id/etPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Phone Number"
+        android:inputType="phone" />
+
+    <!-- Button to generate ID card -->
+    <Button
+        android:id="@+id/btnGenerateID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generate Student ID Card" />
+        
+        **activity_second.xml**
+        
+        <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#f0f0f0">
+
+    <!-- CardView to represent the ID Card Box -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="16dp"
+        android:padding="16dp">
+
+        <!-- LinearLayout inside the CardView to organize ID card content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <!-- ImageView for student photo (default image) -->
+            <ImageView
+                android:id="@+id/ivStudentPhoto"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/student"
+                android:contentDescription="Student Photo"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"/>
+
+            <!-- TextView for Student ID Card Title -->
+            <TextView
+                android:id="@+id/tvStudentIDCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Student ID Card"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:padding="10dp" />
+
+            <!-- TextView for Student Details -->
+            <TextView
+                android:id="@+id/tvIDCardDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Student Details will be shown here"
+                android:textSize="18sp"
+                android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
+
+**AndroidManifest.xml**
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Exam8"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".SecondActivity"
+            android:exported="true">
+
+        </activity>
+    </application>
+
+</manifest>
+
+**MainActivity.java**
+
+package com.example.exam8;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        EditText etAdmissionNumber = findViewById(R.id.etAdmissionNumber);
+        EditText etName = findViewById(R.id.etName);
+        EditText etCourse = findViewById(R.id.etCourse);
+        EditText etPhoneNumber = findViewById(R.id.etPhoneNumber);
+        Button btnGenerateID = findViewById(R.id.btnGenerateID);
+
+        btnGenerateID.setOnClickListener(view -> {
+            String admissionNumber = etAdmissionNumber.getText().toString().trim();
+            String name = etName.getText().toString().trim();
+            String course = etCourse.getText().toString().trim();
+            String phoneNumber = etPhoneNumber.getText().toString().trim();
+
+            // Validate that the fields are not empty
+            if (admissionNumber.isEmpty() || name.isEmpty() || course.isEmpty() || phoneNumber.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Proceed to SecondActivity to generate ID card
+            Intent intent = new Intent(this, SecondActivity.class);
+            intent.putExtra("admissionNumber", admissionNumber);
+            intent.putExtra("name", name);
+            intent.putExtra("course", course);
+            intent.putExtra("phoneNumber", phoneNumber);
+            startActivity(intent);
+        });
+    }
+}
+
+
+**SecondActivity.java**
+
+package com.example.exam8;
+
+
+
+import android.os.Bundle;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SecondActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_second);
+
+        TextView tvStudentIDCard = findViewById(R.id.tvStudentIDCard);
+        TextView tvIDCardDetails = findViewById(R.id.tvIDCardDetails);
+
+        // Retrieve data passed from MainActivity
+        String admissionNumber = getIntent().getStringExtra("admissionNumber");
+        String name = getIntent().getStringExtra("name");
+        String course = getIntent().getStringExtra("course");
+        String phoneNumber = getIntent().getStringExtra("phoneNumber");
+
+        // Display the student ID card details
+        String idCardDetails = "Admission Number: " + admissionNumber + "\n" +
+                "Name: " + name + "\n" +
+                "Course: " + course + "\n" +
+                "Phone Number: " + phoneNumber;
+
+        tvIDCardDetails.setText(idCardDetails);
+    }
+}
+
+**student.png**
+
+</LinearLayout>
