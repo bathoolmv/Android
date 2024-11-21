@@ -1,0 +1,237 @@
+MainActivity.java
+
+package com.example.relativelayout;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText firstName, surname, mobile, newPassword;
+    private Spinner daySpinner, monthSpinner, yearSpinner;
+    private RadioGroup genderGroup;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initializing views
+        firstName = findViewById(R.id.first);
+        surname = findViewById(R.id.surname);
+        mobile = findViewById(R.id.mob);
+        newPassword = findViewById(R.id.newpass);
+        daySpinner = findViewById(R.id.spinner1);
+        monthSpinner = findViewById(R.id.spinner2);
+        yearSpinner = findViewById(R.id.spinner3);
+        genderGroup = findViewById(R.id.gender_group);
+
+        // Setting up spinners
+        setupSpinners();
+    }
+
+    private void setupSpinners() {
+        // Example data for days
+        String[] days = new String[31];
+        for (int i = 1; i <= 31; i++) {
+            days[i - 1] = String.valueOf(i);
+        }
+
+        // Example data for months
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+        // Example data for years
+        String[] years = new String[100];
+        int currentYear = 2024; // You can dynamically calculate this
+        for (int i = 0; i < 100; i++) {
+            years[i] = String.valueOf(currentYear - i);
+        }
+
+        // Setting adapters
+        ArrayAdapter<String> dayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, days);
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, months);
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, years);
+
+        daySpinner.setAdapter(dayAdapter);
+        monthSpinner.setAdapter(monthAdapter);
+        yearSpinner.setAdapter(yearAdapter);
+    }
+
+    public void onSubmit(View view) {
+        // Gathering user input
+        String firstNameInput = firstName.getText().toString().trim();
+        String surnameInput = surname.getText().toString().trim();
+        String mobileInput = mobile.getText().toString().trim();
+        String passwordInput = newPassword.getText().toString().trim();
+        String day = daySpinner.getSelectedItem().toString();
+        String month = monthSpinner.getSelectedItem().toString();
+        String year = yearSpinner.getSelectedItem().toString();
+
+        // Getting selected gender
+        int selectedGenderId = genderGroup.getCheckedRadioButtonId();
+        RadioButton selectedGenderButton = findViewById(selectedGenderId);
+        String gender = (selectedGenderButton != null) ? selectedGenderButton.getText().toString() : "Not Selected";
+
+        // Validating inputs
+        if (firstNameInput.isEmpty() || surnameInput.isEmpty() || mobileInput.isEmpty() || passwordInput.isEmpty()) {
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Displaying a summary message
+        String summary = "Name: " + firstNameInput + " " + surnameInput + "\n" +
+                "Mobile: " + mobileInput + "\n" +
+                "Password: " + passwordInput + "\n" +
+                "DOB: " + day + " " + month + " " + year + "\n" +
+                "Gender: " + gender;
+
+        Toast.makeText(this, summary, Toast.LENGTH_LONG).show();
+    }
+}
+
+
+___________________________________________
+activity_main.xml
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/facebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="140dp"
+        android:text="Facebook"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/facebook"
+        android:layout_centerHorizontal="true"
+        android:text="Create a new account" />
+
+    <EditText
+        android:id="@+id/first"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/create"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="first name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/surname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/create"
+        android:layout_toRightOf="@id/first"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="surname"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/mob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/first"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="mobile number"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/newpass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mob"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="new password"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/dob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/newpass"
+        android:text="Date of birth" />
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_below="@id/dob" />
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dob"
+        android:layout_toRightOf="@id/spinner1" />
+
+    <Spinner
+        android:id="@+id/spinner3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dob"
+        android:layout_toRightOf="@id/spinner2" />
+
+    <TextView
+        android:id="@+id/gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spinner3"
+        android:text="Gender" />
+
+    <!-- Add RadioGroup to group the gender RadioButtons -->
+    <RadioGroup
+        android:id="@+id/gender_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gender"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male" />
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/radioButton2"
+            android:text="Female" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gender_group"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:onClick="onSubmit"
+        android:text="Submit" />
+</RelativeLayout>
+
