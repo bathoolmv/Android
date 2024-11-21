@@ -1,0 +1,166 @@
+**********************	activity_main.xml ***********************
+                        
+                        
+                        
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="#F5F5F5">
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:gravity="center"
+        android:textSize="32sp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/white"
+        android:padding="16dp" />
+
+    <EditText
+        android:id="@+id/etNumber1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter first number"
+        android:inputType="numberDecimal"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/etNumber2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter second number"
+        android:inputType="numberDecimal"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/btnAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnSubtract"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Subtract"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnMultiply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Multiply"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnDivide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Divide" />
+    </LinearLayout>
+
+    <!-- Clear Button -->
+    <Button
+        android:id="@+id/btnClear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clear"
+        android:backgroundTint="#D32F2F"
+        android:textColor="@android:color/white"
+        android:padding="12dp" />
+</LinearLayout>
+
+
+
+               ***********************   MainActivity.java  ***************************
+
+
+package com.example.calculator;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText etNumber1, etNumber2;
+    private TextView tvResult;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        etNumber1 = findViewById(R.id.etNumber1);
+        etNumber2 = findViewById(R.id.etNumber2);
+        tvResult = findViewById(R.id.tvResult);
+
+        findViewById(R.id.btnAdd).setOnClickListener(v -> calculate("+"));
+        findViewById(R.id.btnSubtract).setOnClickListener(v -> calculate("-"));
+        findViewById(R.id.btnMultiply).setOnClickListener(v -> calculate("*"));
+        findViewById(R.id.btnDivide).setOnClickListener(v -> calculate("/"));
+        findViewById(R.id.btnClear).setOnClickListener(v -> clearFields());
+    }
+
+    private void calculate(String operator) {
+        String num1 = etNumber1.getText().toString();
+        String num2 = etNumber2.getText().toString();
+
+        if (num1.isEmpty() || num2.isEmpty()) {
+            showToast("Please enter both numbers");
+            return;
+        }
+
+        try {
+            double number1 = Double.parseDouble(num1);
+            double number2 = Double.parseDouble(num2);
+            double result = 0;
+
+            switch (operator) {
+                case "+": result = number1 + number2; break;
+                case "-": result = number1 - number2; break;
+                case "*": result = number1 * number2; break;
+                case "/":
+                    if (number2 == 0) {
+                        showToast("Cannot divide by zero");
+                        return;
+                    }
+                    result = number1 / number2;
+                    break;
+            }
+
+            tvResult.setText(String.valueOf(result));
+        } catch (NumberFormatException e) {
+            showToast("Invalid input");
+        }
+    }
+
+    private void clearFields() {
+        etNumber1.setText("");
+        etNumber2.setText("");
+        tvResult.setText("0");
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+}
