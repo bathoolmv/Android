@@ -1,0 +1,168 @@
+main
+
+
+package com.example.agecalculator;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Calendar;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText editTextName;
+    private DatePicker datePicker;
+    private Button buttonSubmit;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize UI components
+        editTextName = findViewById(R.id.editTextName);
+        datePicker = findViewById(R.id.datePicker);
+        buttonSubmit = findViewById(R.id.buttonSubmit);
+
+        // Handle button click
+        buttonSubmit.setOnClickListener(v -> {
+            String name = editTextName.getText().toString();
+
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Please enter your name!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Get the selected date from DatePicker
+            int day = datePicker.getDayOfMonth();
+            int month = datePicker.getMonth();
+            int year = datePicker.getYear();
+
+            // Calculate age
+            int age = calculateAge(day, month, year);
+
+            if (age < 0) {
+                Toast.makeText(this, "Invalid date of birth!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Start SecondActivity and pass data
+            Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+            intent.putExtra("USER_NAME", name);
+            intent.putExtra("USER_AGE", age);
+            startActivity(intent);
+        });
+    }
+
+    private int calculateAge(int day, int month, int year) {
+        Calendar today = Calendar.getInstance();
+        int currentYear = today.get(Calendar.YEAR);
+        int currentMonth = today.get(Calendar.MONTH);
+        int currentDay = today.get(Calendar.DAY_OF_MONTH);
+
+        int age = currentYear - year;
+
+        // Adjust age if the birthday hasn't occurred this year yet
+        if (currentMonth < month || (currentMonth == month && currentDay < day)) {
+            age--;
+        }
+
+        return age;
+    }
+}
+
+
+
+
+second
+
+
+package com.example.agecalculator;
+
+import android.os.Bundle;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SecondActivity extends AppCompatActivity {
+
+    private TextView textViewNameAge;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_second);
+
+        // Initialize UI component
+        textViewNameAge = findViewById(R.id.textViewNameAge);
+
+        // Get data from Intent
+        String name = getIntent().getStringExtra("USER_NAME");
+        int age = getIntent().getIntExtra("USER_AGE", 0);
+
+        // Set name and age
+        textViewNameAge.setText("Hi " + name + ", your age is " + age + " years.");
+    }
+}
+
+
+
+
+main.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your name"
+        android:inputType="textPersonName" />
+
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:datePickerMode="spinner" />
+
+    <Button
+        android:id="@+id/buttonSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_marginTop="16dp" />
+</LinearLayout>
+
+
+
+
+second.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewNameAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hi, User"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#000" />
+</LinearLayout>
